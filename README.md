@@ -1,56 +1,37 @@
-# Welcome to your Expo app 👋
+# UPPR — mobile app
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Native iOS/Android companion to [uppr.com.ua](https://uppr.com.ua), built with Expo SDK 57 + Expo Router.
 
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Run it on your phone
 
 ```bash
-npm run reset-project
+npm start            # starts Metro; scan the QR code with Expo Go
+npm start -- --tunnel  # if phone and Mac are on different networks
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Other scripts: `npm run web`, `npx tsc --noEmit`, `npm run lint`.
 
-### Other setup steps
+## How content works
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+- `src/data/articles.ts` — article catalog (slug, title, category, date, tags, reading time). Add new posts here.
+- Article bodies are fetched live from uppr.com.ua and parsed into native blocks by `src/lib/parse-article.ts`
+  (headings, paragraphs, lists, highlighted phrases, email examples, image grids, embeds).
+- Opened articles are cached on-device; bookmarked ones stay available offline.
+- `src/data/quiz.ts` — Email Level Test questions (sample set; replace with the official questions).
+- `src/data/resources.ts` — downloads and case studies; `src/data/site.ts` — external links.
 
-## Learn more
+## Structure
 
-To learn more about developing your project with Expo, look at the following resources:
+```
+src/app/(tabs)/     Home, Blog, Test, Saved, More (native tab bar; web uses a floating bar)
+src/app/article/    Reader: progress bar, text size, share, bookmark, offline copy
+src/app/quiz.tsx    Full-screen quiz flow
+src/components/     Design-system components
+src/theme/          Tokens (colors, type, spacing) + light/dark theme provider
+src/state/          Bookmarks, reading history, settings, quiz record (AsyncStorage)
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Links like `https://uppr.com.ua/blog/articles/<slug>` are mapped to the in-app reader by `src/app/+native-intent.tsx`
+(needs universal links / app links configured before a store release).
 
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Note: in the web preview, article bodies can't load because the site doesn't send CORS headers. On iOS/Android they load normally.
