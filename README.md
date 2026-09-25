@@ -9,7 +9,13 @@ npm start            # starts Metro; scan the QR code with Expo Go
 npm start -- --tunnel  # if phone and Mac are on different networks
 ```
 
-Other scripts: `npm run web`, `npx tsc --noEmit`, `npm run lint`.
+Other scripts: `npm run web`, `npx tsc --noEmit`, `npm run lint`, `npm run icons`.
+
+## App icon and splash
+
+`npm run icons` regenerates every icon from the vector "[UP]" mark in `scripts/generate-app-icons.mjs`
+(app icon, Android adaptive layers, themed monochrome icon, splash mark, favicon). Editable SVGs are written to `assets/brand/`.
+The splash screen only shows in real builds (EAS preview/production), not in Expo Go.
 
 ## How content works
 
